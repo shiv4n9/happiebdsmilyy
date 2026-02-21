@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
+import confetti from 'canvas-confetti';
 
 const VINYL_PARTICLES = Array.from({ length: 30 }, () => ({
   left: Math.random() * 100,
@@ -9,7 +10,7 @@ const VINYL_PARTICLES = Array.from({ length: 30 }, () => ({
   colorIndex: Math.floor(Math.random() * 3),
 }));
 
-const VinylPlayer = ({ onMusicStart, reduceMotion = false }) => {
+const VinylPlayer = ({ onMusicStart, reduceMotion = false, isMobile = false }) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [showPhoto, setShowPhoto] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
@@ -34,10 +35,9 @@ const VinylPlayer = ({ onMusicStart, reduceMotion = false }) => {
       }
       onMusicStart?.();
 
-      // Trigger music note confetti burst
       setTimeout(() => {
         confetti({
-          particleCount: 100,
+          particleCount: isMobile ? 40 : 100,
           spread: 70,
           origin: { y: 0.6 },
           colors: ['#3b82f6', '#8b5cf6', '#22d3ee'],
@@ -60,7 +60,7 @@ const VinylPlayer = ({ onMusicStart, reduceMotion = false }) => {
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center px-4">
-      {!reduceMotion && (
+      {!reduceMotion && !isMobile && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
           {particles.map((p, i) => (
             <Motion.div

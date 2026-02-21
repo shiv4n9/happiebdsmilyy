@@ -34,6 +34,13 @@ html {
   scroll-snap-type: y proximity;
 }
 
+/* Mobile: disable scroll-snap to reduce jank on touch devices */
+@media (max-width: 768px) {
+  .smooth-scroll-snap {
+    scroll-snap-type: none;
+  }
+}
+
 /* Smooth transitions globally */
 @media (prefers-reduced-motion: no-preference) {
   * {
@@ -98,5 +105,17 @@ html {
     z-index: 1;
     transform: translateZ(0);
     will-change: auto;
+  }
+}
+
+/* Mobile: simpler confetti background for performance */
+@media (max-width: 768px) {
+  .confetti-bg::before {
+    background-image: 
+      radial-gradient(circle, #facc15 2px, transparent 2px),
+      radial-gradient(circle, #f472b6 2px, transparent 2px),
+      radial-gradient(circle, #a855f7 2px, transparent 2px);
+    background-size: 60px 60px, 90px 90px, 80px 80px;
+    background-position: 0 0, 30px 40px, 60px 80px;
   }
 }

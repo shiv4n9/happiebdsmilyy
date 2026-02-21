@@ -59,9 +59,19 @@ function App() {
     }
   };
 
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setReduceMotion(mq.matches);
+    update();
+    mq.addEventListener?.('change', update);
+    return () => mq.removeEventListener?.('change', update);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    const update = () => setIsMobile(mq.matches);
     update();
     mq.addEventListener?.('change', update);
     return () => mq.removeEventListener?.('change', update);
@@ -144,9 +154,9 @@ function App() {
             background: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 25%, #581c87 50%, #831843 75%, #9d174d 90%, #1e1b4b 100%)',
           }}
         >
-          {/* Optimized Punjabi Background Decorations */}
+          {/* Background decorations - disabled on mobile for performance */}
+          {!isMobile && (
           <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-            {/* Reduced Phulkari Pattern Elements */}
             {PHULKARI.map((p, i) => (
               <Motion.div
                 key={`phulkari-${i}`}
@@ -253,6 +263,7 @@ function App() {
               </Motion.div>
             ))}
           </div>
+          )}
 
           {/* Achievement Toast */}
           <AchievementToast 
@@ -260,8 +271,8 @@ function App() {
             onComplete={() => setCurrentAchievement(null)} 
           />
 
-      {/* Grand Celebration Effects */}
-      {musicStarted && <CelebrationEffects intensity="high" activeSection={activeIndex} />}
+      {/* Grand Celebration Effects - disabled on mobile for performance */}
+      {musicStarted && !isMobile && <CelebrationEffects intensity="high" activeSection={activeIndex} />}
 
       {/* Interactive Birthday Counter */}
       {musicStarted && (
@@ -298,7 +309,8 @@ function App() {
             setMusicStarted(true);
             showAchievement('musicStart');
           }} 
-          reduceMotion={reduceMotion} 
+          reduceMotion={reduceMotion}
+          isMobile={isMobile} 
         />
         
         {/* Scroll Indicator */}
@@ -344,7 +356,7 @@ function App() {
         className="min-h-screen w-full flex items-center justify-center snap-start relative party-shadow py-16 px-4"
         style={{ background: 'linear-gradient(180deg, #14532d 0%, #166534 25%, #1e3a5f 60%, #581c87 100%)' }}
       >
-        <ClanWarCake reduceMotion={reduceMotion} />
+        <ClanWarCake reduceMotion={reduceMotion} isMobile={isMobile} />
         
         {/* Scroll Indicator */}
         <Motion.div
@@ -390,7 +402,8 @@ function App() {
         }}
       >
         <RageDropCake 
-          reduceMotion={reduceMotion} 
+          reduceMotion={reduceMotion}
+          isMobile={isMobile}
           onFinishLetter={() => {
             setShowBackToTop(true);
             showAchievement('backToTop');

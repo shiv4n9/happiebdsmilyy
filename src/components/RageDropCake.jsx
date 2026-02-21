@@ -68,7 +68,7 @@ const messages = [
   }
 ];
 
-const RageDropCake = ({ reduceMotion = false, onFinishLetter }) => {
+const RageDropCake = ({ reduceMotion = false, isMobile = false, onFinishLetter }) => {
   const [spellDropped, setSpellDropped] = useState(false);
   const [activeCandles, setActiveCandles] = useState([true, true, true]);
   const [cakeCut, setCakeCut] = useState(false);
@@ -82,7 +82,7 @@ const RageDropCake = ({ reduceMotion = false, onFinishLetter }) => {
   const dropSpellOnCake = () => {
     setSpellDropped(true);
     confetti({
-      particleCount: 100,
+      particleCount: isMobile ? 40 : 100,
       spread: 70,
       origin: { y: 0.6 },
       colors: ['#a855f7', '#ec4899', '#f97316'],
@@ -115,9 +115,8 @@ const RageDropCake = ({ reduceMotion = false, onFinishLetter }) => {
     newCandles[index] = false;
     setActiveCandles(newCandles);
 
-    // Blow effect
     confetti({
-      particleCount: 30,
+      particleCount: isMobile ? 12 : 30,
       spread: 50,
       origin: { y: 0.5 },
       colors: ['#60a5fa', '#93c5fd', '#dbeafe'],
@@ -130,44 +129,30 @@ const RageDropCake = ({ reduceMotion = false, onFinishLetter }) => {
     setCakeCut(true);
     onFinishLetter?.();
 
-    // Massive celebration
     confetti({
-      particleCount: 200,
+      particleCount: isMobile ? 60 : 200,
       spread: 100,
       origin: { y: 0.5 },
       colors: ['#ffd700', '#a855f7', '#22c55e', '#ec4899'],
       shapes: ['star', 'circle'],
-      scalar: 1.5,
+      scalar: isMobile ? 1 : 1.5,
     });
 
-    // Continuous confetti
+    if (isMobile) return; // Skip continuous confetti on mobile
     const duration = 5000;
     const animationEnd = Date.now() + duration;
     const interval = setInterval(() => {
       const timeLeft = animationEnd - Date.now();
       if (timeLeft <= 0) return clearInterval(interval);
-
-      confetti({
-        particleCount: 3,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ['#a855f7', '#ec4899', '#fde047'],
-      });
-      confetti({
-        particleCount: 3,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ['#a855f7', '#ec4899', '#fde047'],
-      });
+      confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#a855f7', '#ec4899', '#fde047'] });
+      confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#a855f7', '#ec4899', '#fde047'] });
     }, 250);
   };
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center gap-6 px-4 py-12">
-      {/* Last Chapter - Enhanced Background */}
-      {!reduceMotion && (
+      {/* Last Chapter - Enhanced Background (disabled on mobile for performance) */}
+      {!reduceMotion && !isMobile && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
           {/* Soft glowing orbs - aurora effect */}
           {FINALE_ORBS.map((o, i) => (
@@ -278,7 +263,7 @@ const RageDropCake = ({ reduceMotion = false, onFinishLetter }) => {
         </div>
       )}
 
-      {!reduceMotion && (
+      {!reduceMotion && !isMobile && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
           {sparkles.map((p, i) => (
             <Motion.div

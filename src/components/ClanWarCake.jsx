@@ -13,7 +13,7 @@ const CLAN_GRASS = Array.from({ length: 60 }, () => ({
   top: Math.random() * 100,
 }));
 
-const ClanWarCake = ({ reduceMotion = false }) => {
+const ClanWarCake = ({ reduceMotion = false, isMobile = false }) => {
   const [seals, setSeals] = useState([
     { id: 1, deployed: false, position: { x: 0, y: 0 } },
     { id: 2, deployed: false, position: { x: 0, y: 0 } },
@@ -60,20 +60,19 @@ const ClanWarCake = ({ reduceMotion = false }) => {
         setTimeout(() => {
           setTownHallDestroyed(true);
           
-          // Massive 3-star victory confetti burst
+          const confettiCount = isMobile ? 60 : 200;
+          const confettiCount2 = isMobile ? 40 : 150;
           confetti({
-            particleCount: 200,
+            particleCount: confettiCount,
             spread: 100,
             origin: { y: 0.5 },
             colors: ['#ffd700', '#a855f7', '#22c55e'],
             shapes: ['star', 'circle'],
-            scalar: 1.5,
+            scalar: isMobile ? 1 : 1.5,
           });
-          
-          // Second burst
           setTimeout(() => {
             confetti({
-              particleCount: 150,
+              particleCount: confettiCount2,
               spread: 80,
               origin: { y: 0.6 },
               colors: ['#ffd700', '#a855f7', '#22c55e'],
@@ -88,7 +87,7 @@ const ClanWarCake = ({ reduceMotion = false }) => {
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center px-4">
-      {!reduceMotion && (
+      {!reduceMotion && !isMobile && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
           {stars.map((s, i) => (
             <Motion.div
