@@ -11,6 +11,31 @@ import AchievementToast from './components/AchievementToast';
 // Smooth easing for all motions (less choppy)
 const SMOOTH_EASE = [0.33, 1, 0.68, 1];
 
+// Stable positions for background decorations (avoids re-render flicker)
+const PHULKARI = [...Array(10)].map((_, i) => ({
+  left: [12, 85, 45, 72, 8, 92, 35, 68, 22, 78][i],
+  top: [5, 75, 40, 90, 55, 15, 82, 28, 65, 42][i],
+  duration: 28 + (i % 6),
+  delay: i * 1.5,
+}));
+const MUSIC = [...Array(6)].map((_, i) => ({
+  left: [18, 88, 55, 8, 75, 42][i],
+  top: [25, 80, 12, 68, 92, 48][i],
+  duration: 24 + (i % 5),
+  delay: i * 2,
+}));
+const SPARKLES = [...Array(12)].map((_, i) => ({
+  left: [5, 90, 35, 70, 15, 82, 48, 25, 95, 58, 12, 78][i],
+  top: [10, 88, 32, 72, 55, 18, 85, 42, 65, 8, 78, 35][i],
+  duration: 32 + (i % 8),
+  delay: i * 1,
+}));
+const DIYAS = [...Array(4)].map((_, i) => ({
+  left: [20, 75, 50, 90][i],
+  top: [30, 85, 15, 60][i],
+  delay: i * 0.9,
+}));
+
 function App() {
   const [introFinished, setIntroFinished] = useState(false);
   const [musicStarted, setMusicStarted] = useState(false);
@@ -34,9 +59,19 @@ function App() {
     }
   };
 
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setReduceMotion(mq.matches);
+    update();
+    mq.addEventListener?.('change', update);
+    return () => mq.removeEventListener?.('change', update);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    const update = () => setIsMobile(mq.matches);
     update();
     mq.addEventListener?.('change', update);
     return () => mq.removeEventListener?.('change', update);
@@ -119,6 +154,117 @@ function App() {
             background: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 25%, #581c87 50%, #831843 75%, #9d174d 90%, #1e1b4b 100%)',
           }}
         >
+          {/* Background decorations - disabled on mobile for performance */}
+          {!isMobile && (
+          <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+            {PHULKARI.map((p, i) => (
+              <Motion.div
+                key={`phulkari-${i}`}
+                className="absolute text-7xl"
+                style={{
+                  left: `${p.left}%`,
+                  top: `${p.top}%`,
+                  filter: 'drop-shadow(0 0 15px rgba(250, 204, 21, 0.4)) drop-shadow(0 0 20px rgba(236, 72, 153, 0.4))',
+                }}
+                animate={{
+                  rotate: [0, 360],
+                  scale: [1, 1.15, 1],
+                  opacity: [0.5, 0.7, 0.5],
+                }}
+                transition={{
+                  duration: p.duration,
+                  repeat: Infinity,
+                  delay: p.delay,
+                  ease: SMOOTH_EASE,
+                  type: 'tween',
+                }}
+              >
+                {['🌺', '👑', '🌸', '🌼', '🏵️'][i % 5]}
+              </Motion.div>
+            ))}
+            
+            {/* Reduced Musical Elements */}
+            {MUSIC.map((m, i) => (
+              <Motion.div
+                key={`music-${i}`}
+                className="absolute text-6xl"
+                style={{
+                  left: `${m.left}%`,
+                  top: `${m.top}%`,
+                  filter: 'drop-shadow(0 0 12px rgba(255, 215, 0, 0.6))',
+                }}
+                animate={{
+                  y: [0, -12, 0],
+                  rotate: [0, 5, -5, 0],
+                  opacity: [0.4, 0.6, 0.4],
+                }}
+                transition={{
+                  duration: m.duration,
+                  repeat: Infinity,
+                  delay: m.delay,
+                  ease: SMOOTH_EASE,
+                  type: 'tween',
+                }}
+              >
+                {['🥁', '🎵', '🎶', '🪕'][i % 4]}
+              </Motion.div>
+            ))}
+
+            {/* Reduced Sparkles */}
+            {SPARKLES.map((s, i) => (
+              <Motion.div
+                key={`sparkle-${i}`}
+                className="absolute text-4xl"
+                style={{
+                  left: `${s.left}%`,
+                  top: `${s.top}%`,
+                  filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))',
+                }}
+                animate={{
+                  rotate: [0, 360],
+                  scale: [0.9, 1.1, 0.9],
+                  opacity: [0.35, 0.6, 0.35],
+                }}
+                transition={{
+                  duration: s.duration,
+                  repeat: Infinity,
+                  delay: s.delay,
+                  ease: SMOOTH_EASE,
+                  type: 'tween',
+                }}
+              >
+                {['💫', '✨', '⭐', '🌟'][i % 4]}
+              </Motion.div>
+            ))}
+
+            {/* Reduced Diyas */}
+            {DIYAS.map((d, i) => (
+              <Motion.div
+                key={`diya-${i}`}
+                className="absolute text-5xl"
+                style={{
+                  left: `${d.left}%`,
+                  top: `${d.top}%`,
+                  filter: 'drop-shadow(0 0 20px rgba(255, 140, 0, 0.7))',
+                }}
+                animate={{
+                  scale: [1, 1.08, 1],
+                  opacity: [0.55, 0.75, 0.55],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  delay: d.delay,
+                  ease: SMOOTH_EASE,
+                  type: 'tween',
+                }}
+              >
+                🪔
+              </Motion.div>
+            ))}
+          </div>
+          )}
+
           {/* Achievement Toast */}
           <AchievementToast 
             achievement={currentAchievement} 
