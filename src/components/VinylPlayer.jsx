@@ -235,7 +235,7 @@ const VinylPlayer = ({ onMusicStart, reduceMotion = false, isMobile = false }) =
               >
                 <div className="relative">
                   <img
-                    src="/real/photo1.jpg"
+                    src="/hie/1.png"
                     alt="Memory 1"
                     className="w-72 h-72 object-cover rounded-lg shadow-lg"
                   />

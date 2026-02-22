@@ -352,7 +352,7 @@ const ClanWarCake = ({ reduceMotion = false, isMobile = false }) => {
                 transition={{ duration: 3.5, repeat: Infinity, ease: [0.33, 1, 0.68, 1] }}
               >
                 <img
-                  src="/real/photo2.jpg"
+                  src="/hie/6.png"
                   alt="Legendary Memory"
                   className="w-full aspect-[3/4] object-cover rounded-md"
                 />
