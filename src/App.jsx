@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
 import GhibliIntro from './components/GhibliIntro';
 import VinylPlayer from './components/VinylPlayer';
 import ClanWarCake from './components/ClanWarCake';
@@ -504,6 +505,7 @@ function App() {
         </Motion.div>
         )}
       </AnimatePresence>
+      <Analytics />
     </>
   );
 }
